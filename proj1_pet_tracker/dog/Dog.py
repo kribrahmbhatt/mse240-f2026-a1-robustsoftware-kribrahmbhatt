@@ -171,13 +171,10 @@ class Dog:
     ############
 
 
-    def set_name(self, new_name : str):
-        """ set_name
-
-            new_name    the dog's new name
-        """
-        #stub
-        pass
+    def set_name(self, new_name: str):
+        """ new_name    the dog's new name (non-empty string) """
+        Dog._check_text(new_name, "name")
+        self._name = new_name
     
     def set_weight(self, new_weight : float):
         """ set_weight
