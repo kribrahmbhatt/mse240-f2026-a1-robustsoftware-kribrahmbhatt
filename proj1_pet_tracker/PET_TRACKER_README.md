@@ -18,3 +18,9 @@ The current program has a main function that supports the Dog class, as develope
 ## Stretch goal: support different kinds of pets
 
 Go beyond dogs and support other pets, such as cats, turtles, and more. This is an opportunity to practice abstraction and reducing repetitive code and refactoring. Consider using inheritance and abstract base classes to share common pet behavior while allowing each kind of pet to provide its own details. You may have to do individual research here. Alternatively, design the model with private fields that can represent the species or type of pet. 
+
+## How to run
+
+Run the app (from the repository root): `python proj1_pet_tracker/pet_tracker_main.py`
+
+Run the unit tests (from the repository root): `python -m unittest discover -s proj1_pet_tracker -t . -v`
