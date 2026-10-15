@@ -483,3 +483,62 @@ class TestDog(unittest.TestCase):
         self.assertIsNone(dog.get_most_recent_meal_time())
         self.assertEqual(Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS, dog.get_max_time_between_walks())
         self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS, dog.get_typical_time_between_meals())
+
+    #
+    # set_max_time_between_walks / set_typical_time_between_meals
+    #
+
+    def test_set_max_walk_time_typical(self):
+        self._waffle.set_max_time_between_walks(timedelta(hours=4))
+        self.assertEqual(timedelta(hours=4), self._waffle.get_max_time_between_walks())
+        self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS,
+                         self._waffle.get_typical_time_between_meals())
+
+    def test_set_max_walk_time_typeerror(self):
+        for bad in (4, "4 hours", None, 4.5):
+            with self.assertRaises(TypeError):
+                self._waffle.set_max_time_between_walks(bad)
+
+    def test_set_max_walk_time_valueerror_zero(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_max_time_between_walks(timedelta(0))
+
+    def test_set_max_walk_time_valueerror_negative(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_max_time_between_walks(timedelta(hours=-1))
+
+    def test_set_max_walk_time_invalid_leaves_value(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_max_time_between_walks(timedelta(0))
+        self.assertEqual(Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS, self._waffle.get_max_time_between_walks())
+        with self.assertRaises(TypeError):
+            self._waffle.set_max_time_between_walks(3)
+        self.assertEqual(Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS, self._waffle.get_max_time_between_walks())
+
+    def test_set_meal_time_typical(self):
+        self._waffle.set_typical_time_between_meals(timedelta(hours=6))
+        self.assertEqual(timedelta(hours=6), self._waffle.get_typical_time_between_meals())
+        self.assertEqual(Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS, self._waffle.get_max_time_between_walks())
+
+    def test_set_meal_time_typeerror(self):
+        for bad in (6, "6 hours", None, 6.5):
+            with self.assertRaises(TypeError):
+                self._waffle.set_typical_time_between_meals(bad)
+
+    def test_set_meal_time_valueerror_zero(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_typical_time_between_meals(timedelta(0))
+
+    def test_set_meal_time_valueerror_negative(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_typical_time_between_meals(timedelta(minutes=-1))
+
+    def test_set_meal_time_invalid_leaves_value(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_typical_time_between_meals(timedelta(0))
+        self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS,
+                         self._waffle.get_typical_time_between_meals())
+        with self.assertRaises(TypeError):
+            self._waffle.set_typical_time_between_meals("soon")
+        self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS,
+                         self._waffle.get_typical_time_between_meals())
