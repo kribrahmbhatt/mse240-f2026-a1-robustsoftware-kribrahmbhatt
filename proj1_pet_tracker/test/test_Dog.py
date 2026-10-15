@@ -303,4 +303,3 @@ class TestDog(unittest.TestCase):
         self._waffle.set_name("Maple")
         self.assertEqual("George", self._george.get_name())
         self.assertEqual("Maple", self._waffle.get_name())
-        
