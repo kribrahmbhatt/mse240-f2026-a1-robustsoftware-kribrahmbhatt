@@ -176,13 +176,10 @@ class Dog:
         Dog._check_text(new_name, "name")
         self._name = new_name
     
-    def set_weight(self, new_weight : float):
-        """ set_weight
-
-            new_weight  the new measured weight of the dog (in lbs)
-        """
-        #stub
-        pass
+    def set_weight(self, new_weight: float):
+        """ new_weight  the new measured weight of the dog (in lbs), 0 < w <= MAX_WEIGHT """
+        Dog._check_weight(new_weight)
+        self._weight = float(new_weight)
     
     def add_potential_health_issue(self, health_issue : str):
         """ add_potential_health_issues
