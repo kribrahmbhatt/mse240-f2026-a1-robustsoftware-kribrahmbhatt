@@ -181,11 +181,8 @@ class Dog:
         Dog._check_weight(new_weight)
         self._weight = float(new_weight)
     
-    def add_potential_health_issue(self, health_issue : str):
-        """ add_potential_health_issues
-
-            add a health issue to the potential health issues
-        """
-        #stub
-        pass
-
+    def add_potential_health_issue(self, health_issue: str):
+        """ add a health issue (non-empty string); exact duplicates are ignored """
+        Dog._check_text(health_issue, "health issue")
+        if health_issue not in self._potential_health_issues:
+            self._potential_health_issues.append(health_issue)
