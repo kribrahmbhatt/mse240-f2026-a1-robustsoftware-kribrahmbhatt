@@ -18,7 +18,7 @@ class Dog:
     DEFAULT_MAX_TIME_BETWEEN_WALKS = timedelta(hours=8)
     DEFAULT_TYPICAL_TIME_BETWEEN_MEALS = timedelta(hours=12)
 
-     def __init__(self, name: str, breed: str, gender: str, initial_weight: float,
+    def __init__(self, name: str, breed: str, gender: str, initial_weight: float,
                  colour: str, potential_health_issues: list[str], birth_year: int):
         """ Dog constructor
 

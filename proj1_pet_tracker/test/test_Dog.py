@@ -257,3 +257,50 @@ class TestDog(unittest.TestCase):
         self._waffle.set_weight(100)
         self._waffle.set_name("Wafflez")
         self.assertEqual(8, self._waffle.get_age())
+
+    #
+    # set_name
+    #
+
+    def test_set_name_typical(self):
+        self.assertEqual("Waffle", self._waffle.get_name())
+        self._waffle.set_name("Maple")
+        self.assertEqual("Maple", self._waffle.get_name())
+
+    def test_set_name_other_fields_unchanged(self):
+        self._waffle.set_name("Maple")
+        self.assertEqual("Newfoundland", self._waffle.get_breed())
+        self.assertEqual("Male", self._waffle.get_gender())
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+        self.assertEqual("Black", self._waffle.get_colour())
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+        self.assertEqual(8, self._waffle.get_age())
+
+    def test_set_name_typeerror(self):
+        for bad in (3, 3.2, None, ["x"]):
+            with self.assertRaises(TypeError):
+                self._waffle.set_name(bad)
+
+    def test_set_name_valueerror_empty(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_name("")
+        with self.assertRaises(ValueError):
+            self._waffle.set_name("  ")
+
+    def test_set_name_invalid_leaves_name(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_name("")
+        self.assertEqual("Waffle", self._waffle.get_name())
+        with self.assertRaises(TypeError):
+            self._waffle.set_name(7)
+        self.assertEqual("Waffle", self._waffle.get_name())
+
+    def test_set_name_same_name_ok(self):
+        self._waffle.set_name("Waffle")
+        self.assertEqual("Waffle", self._waffle.get_name())
+
+    def test_set_name_does_not_affect_other_dog(self):
+        self._waffle.set_name("Maple")
+        self.assertEqual("George", self._george.get_name())
+        self.assertEqual("Maple", self._waffle.get_name())
+        
