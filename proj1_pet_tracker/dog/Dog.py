@@ -148,6 +148,22 @@ class Dog:
     def get_age(self) -> int:
         """ return the dog's age in years (relative to CURRENT_YEAR) """
         return Dog.CURRENT_YEAR - self._birth_year
+    
+    def get_most_recent_walk_time(self):
+        """ return the datetime of the last walk, or None if never walked """
+        return self._most_recent_walk_time
+
+    def get_most_recent_meal_time(self):
+        """ return the datetime of the last meal, or None if never fed """
+        return self._most_recent_meal_time
+
+    def get_max_time_between_walks(self) -> timedelta:
+        """ return the longest the dog should go between walks """
+        return self._max_time_between_walks
+
+    def get_typical_time_between_meals(self) -> timedelta:
+        """ return the typical time between meals """
+        return self._typical_time_between_meals
 
     def needs_walk(self) -> bool:
         """ needs_walk
@@ -186,3 +202,11 @@ class Dog:
         Dog._check_text(health_issue, "health issue")
         if health_issue not in self._potential_health_issues:
             self._potential_health_issues.append(health_issue)
+
+    def record_walk(self, when: datetime = None):
+        """ record a walk at time `when` (defaults to now) """
+        self._most_recent_walk_time = Dog._resolve_time(when)
+
+    def record_meal(self, when: datetime = None):
+        """ record a meal at time `when` (defaults to now) """
+        self._most_recent_meal_time = Dog._resolve_time(when)
