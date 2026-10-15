@@ -165,21 +165,27 @@ class Dog:
         """ return the typical time between meals """
         return self._typical_time_between_meals
 
-    def needs_walk(self) -> bool:
-        """ needs_walk
+    def needs_walk(self, now: datetime = None) -> bool:
+        """ return True if the dog needs a walk, False otherwise
 
-            return True if the dog needs a walk, False otherwise
+            now  optional current time (defaults to datetime.now(); useful for testing)
+            A dog that has never been walked needs a walk.
         """
-        #stub
-        pass
+        now = Dog._resolve_time(now)
+        if self._most_recent_walk_time is None:
+            return True
+        return now - self._most_recent_walk_time >= self._max_time_between_walks
 
-    def needs_meal(self) -> bool:
-        """ needs_meal
+    def needs_meal(self, now: datetime = None) -> bool:
+        """ return True if the dog needs a meal, False otherwise
 
-            return True if the dog needs a meal, False otherwise
+            now  optional current time (defaults to datetime.now(); useful for testing)
+            A dog that has never been fed needs a meal.
         """
-        #stub
-        pass
+        now = Dog._resolve_time(now)
+        if self._most_recent_meal_time is None:
+            return True
+        return now - self._most_recent_meal_time >= self._typical_time_between_meals
 
 
     ############
