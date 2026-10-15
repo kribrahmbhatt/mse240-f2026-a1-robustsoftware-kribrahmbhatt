@@ -542,3 +542,117 @@ class TestDog(unittest.TestCase):
             self._waffle.set_typical_time_between_meals("soon")
         self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS,
                          self._waffle.get_typical_time_between_meals())
+
+        #
+    # needs_walk
+    #
+
+    def test_needs_walk_never_walked(self):
+        self.assertTrue(self._waffle.needs_walk(NOW))
+        self.assertIsNone(self._waffle.get_most_recent_walk_time())
+
+    def test_needs_walk_just_walked(self):
+        self._waffle.record_walk(NOW)
+        self.assertFalse(self._waffle.needs_walk(NOW))
+
+    def test_needs_walk_before_threshold(self):
+        self._waffle.record_walk(NOW)
+        self.assertFalse(self._waffle.needs_walk(NOW + timedelta(hours=7, minutes=59)))
+
+    def test_needs_walk_exactly_at_threshold(self):
+        self._waffle.record_walk(NOW)
+        self.assertTrue(self._waffle.needs_walk(NOW + Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS))
+
+    def test_needs_walk_after_threshold(self):
+        self._waffle.record_walk(NOW)
+        self.assertTrue(self._waffle.needs_walk(NOW + timedelta(hours=20)))
+
+    def test_needs_walk_custom_max(self):
+        self._waffle.record_walk(NOW)
+        self._waffle.set_max_time_between_walks(timedelta(hours=2))
+        self.assertFalse(self._waffle.needs_walk(NOW + timedelta(hours=1)))
+        self.assertTrue(self._waffle.needs_walk(NOW + timedelta(hours=2)))
+
+    def test_needs_walk_changing_max_changes_answer(self):
+        self._waffle.record_walk(NOW)
+        later = NOW + timedelta(hours=5)
+        self.assertFalse(self._waffle.needs_walk(later))
+        self._waffle.set_max_time_between_walks(timedelta(hours=3))
+        self.assertTrue(self._waffle.needs_walk(later))
+
+    def test_needs_walk_meal_does_not_matter(self):
+        self._waffle.record_meal(NOW)
+        self.assertTrue(self._waffle.needs_walk(NOW))
+        self._waffle.record_walk(NOW)
+        self.assertFalse(self._waffle.needs_walk(NOW))
+
+    def test_needs_walk_default_now(self):
+        self.assertTrue(self._waffle.needs_walk())
+        self._waffle.record_walk()
+        self.assertFalse(self._waffle.needs_walk())
+
+    def test_needs_walk_typeerror_now(self):
+        with self.assertRaises(TypeError):
+            self._waffle.needs_walk("now")
+        with self.assertRaises(TypeError):
+            self._waffle.needs_walk(5)
+
+    def test_needs_walk_independent_per_dog(self):
+        self._waffle.record_walk(NOW)
+        self.assertFalse(self._waffle.needs_walk(NOW))
+        self.assertTrue(self._george.needs_walk(NOW))
+
+    #
+    # needs_meal
+    #
+
+    def test_needs_meal_never_fed(self):
+        self.assertTrue(self._waffle.needs_meal(NOW))
+        self.assertIsNone(self._waffle.get_most_recent_meal_time())
+
+    def test_needs_meal_just_fed(self):
+        self._waffle.record_meal(NOW)
+        self.assertFalse(self._waffle.needs_meal(NOW))
+
+    def test_needs_meal_before_threshold(self):
+        self._waffle.record_meal(NOW)
+        self.assertFalse(self._waffle.needs_meal(NOW + timedelta(hours=11, minutes=59)))
+
+    def test_needs_meal_exactly_at_threshold(self):
+        self._waffle.record_meal(NOW)
+        self.assertTrue(self._waffle.needs_meal(NOW + Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS))
+
+    def test_needs_meal_after_threshold(self):
+        self._waffle.record_meal(NOW)
+        self.assertTrue(self._waffle.needs_meal(NOW + timedelta(days=2)))
+
+    def test_needs_meal_custom_interval(self):
+        self._waffle.record_meal(NOW)
+        self._waffle.set_typical_time_between_meals(timedelta(hours=4))
+        self.assertFalse(self._waffle.needs_meal(NOW + timedelta(hours=3)))
+        self.assertTrue(self._waffle.needs_meal(NOW + timedelta(hours=4)))
+
+    def test_needs_meal_walk_does_not_matter(self):
+        self._waffle.record_walk(NOW)
+        self.assertTrue(self._waffle.needs_meal(NOW))
+        self._waffle.record_meal(NOW)
+        self.assertFalse(self._waffle.needs_meal(NOW))
+
+    def test_needs_meal_default_now(self):
+        self.assertTrue(self._waffle.needs_meal())
+        self._waffle.record_meal()
+        self.assertFalse(self._waffle.needs_meal())
+
+    def test_needs_meal_typeerror_now(self):
+        with self.assertRaises(TypeError):
+            self._waffle.needs_meal("now")
+        with self.assertRaises(TypeError):
+            self._waffle.needs_meal(5)
+
+    def test_needs_meal_independent_per_dog(self):
+        self._george.record_meal(NOW)
+        self.assertFalse(self._george.needs_meal(NOW))
+        self.assertTrue(self._waffle.needs_meal(NOW))
+
+
+        
