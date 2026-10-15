@@ -142,19 +142,12 @@ class Dog:
         return self._colour
     
     def get_potential_health_issues(self) -> list[str]:
-        """ get_potential_health_issues
+        """ return a copy of the dog's known potential health issues """
+        return list(self._potential_health_issues)
 
-            return the dog's known potential_health_issues as a list
-        """
-        return self._potential_health_issues
-    
     def get_age(self) -> int:
-        """ get_age
-
-            return the dog's age
-        """
-        # assume that the year will always be 2026
-        return 2026 - self._birth_year
+        """ return the dog's age in years (relative to CURRENT_YEAR) """
+        return Dog.CURRENT_YEAR - self._birth_year
 
     def needs_walk(self) -> bool:
         """ needs_walk
