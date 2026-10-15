@@ -364,3 +364,55 @@ class TestDog(unittest.TestCase):
         self._waffle.set_weight(131)
         self._waffle.set_weight(129)
         self.assertAlmostEqual(129, self._waffle.get_weight())
+
+    #
+    # add_potential_health_issue
+    #
+
+    def test_add_issue_typical(self):
+        self._george.add_potential_health_issue("allergies")
+        self.assertEqual(["allergies"], self._george.get_potential_health_issues())
+
+    def test_add_issue_appends_to_existing(self):
+        self._waffle.add_potential_health_issue("bloat")
+        self.assertEqual(["geriatric hips", "bloat"], self._waffle.get_potential_health_issues())
+
+    def test_add_issue_preserves_order(self):
+        for issue in ("a", "b", "c"):
+            self._george.add_potential_health_issue(issue)
+        self.assertEqual(["a", "b", "c"], self._george.get_potential_health_issues())
+
+    def test_add_issue_typeerror(self):
+        for bad in (5, None, ["x"]):
+            with self.assertRaises(TypeError):
+                self._george.add_potential_health_issue(bad)
+        self.assertEqual([], self._george.get_potential_health_issues())
+
+    def test_add_issue_valueerror_empty(self):
+        with self.assertRaises(ValueError):
+            self._george.add_potential_health_issue("")
+        with self.assertRaises(ValueError):
+            self._george.add_potential_health_issue("   ")
+        self.assertEqual([], self._george.get_potential_health_issues())
+
+    def test_add_issue_duplicate_ignored(self):
+        self._waffle.add_potential_health_issue("geriatric hips")
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+
+    def test_add_issue_other_fields_unchanged(self):
+        self._george.add_potential_health_issue("allergies")
+        self.assertEqual("George", self._george.get_name())
+        self.assertAlmostEqual(145, self._george.get_weight())
+        self.assertEqual("Brown", self._george.get_colour())
+        self.assertEqual(6, self._george.get_age())
+
+    def test_add_issue_does_not_affect_other_dog(self):
+        self._george.add_potential_health_issue("allergies")
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+
+    def test_add_issue_does_not_modify_constructor_list(self):
+        issues = ["hips"]
+        dog = self._make(potential_health_issues=issues)
+        dog.add_potential_health_issue("eyes")
+        self.assertEqual(["hips"], issues)
+        self.assertEqual(["hips", "eyes"], dog.get_potential_health_issues())
