@@ -4,7 +4,9 @@
 # Email: kri.brahmbhatt@gmail.com
 # Student ID: 20952086
 # 
-# Source code for the Dog class.
+#Pet Tracker is a small Python project for MSE 240 (Assignment 1: Robust Software). 
+#It models individual dogs and tracks their basic information and daily care.
+
 from datetime import datetime, timedelta
 
 class Dog:
