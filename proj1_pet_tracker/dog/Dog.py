@@ -210,3 +210,13 @@ class Dog:
     def record_meal(self, when: datetime = None):
         """ record a meal at time `when` (defaults to now) """
         self._most_recent_meal_time = Dog._resolve_time(when)
+
+    def set_max_time_between_walks(self, duration: timedelta):
+        """ set the longest allowed time between walks (positive timedelta) """
+        Dog._check_duration(duration, "max time between walks")
+        self._max_time_between_walks = duration
+
+    def set_typical_time_between_meals(self, duration: timedelta):
+        """ set the typical time between meals (positive timedelta) """
+        Dog._check_duration(duration, "typical time between meals")
+        self._typical_time_between_meals = duration
