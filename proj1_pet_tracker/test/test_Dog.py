@@ -195,3 +195,65 @@ class TestDog(unittest.TestCase):
         self.assertEqual(500.0, Dog.MAX_WEIGHT)
         self.assertEqual(2026, Dog.CURRENT_YEAR)
         self.assertLess(Dog.MIN_BIRTH_YEAR, Dog.CURRENT_YEAR)
+
+    #
+    # Accessors
+    #
+
+    def test_get_name_typical1(self):
+        self.assertEqual("Waffle", self._waffle.get_name())
+
+    def test_get_name_typical2(self):
+        self.assertEqual("George", self._george.get_name())
+
+    def test_get_breed_typical1(self):
+        self.assertEqual("Newfoundland", self._waffle.get_breed())
+
+    def test_get_breed_typical2(self):
+        self.assertEqual("Goldendoodle", self._george.get_breed())
+
+    def test_get_gender_typical1(self):
+        self.assertEqual("Male", self._waffle.get_gender())
+
+    def test_get_gender_typical2(self):
+        self.assertEqual("Female", self._make(gender="Female").get_gender())
+        self.assertEqual("Male", self._george.get_gender())
+
+    def test_get_weight_typical1(self):
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+
+    def test_get_weight_typical2(self):
+        self.assertAlmostEqual(145, self._george.get_weight())
+        self.assertAlmostEqual(12.5, self._make(initial_weight=12.5).get_weight())
+
+    def test_get_colour_typical1(self):
+        self.assertEqual("Black", self._waffle.get_colour())
+
+    def test_get_colour_typical2(self):
+        self.assertEqual("Brown", self._george.get_colour())
+
+    def test_get_issues_typical(self):
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+
+    def test_get_issues_empty(self):
+        self.assertEqual([], self._george.get_potential_health_issues())
+        self.assertIsInstance(self._george.get_potential_health_issues(), list)
+
+    def test_get_issues_returns_copy(self):
+        issues = self._waffle.get_potential_health_issues()
+        issues.append("tampered")
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+        self.assertEqual(2, len(issues))
+
+    def test_get_age_typical(self):
+        self.assertEqual(8, self._waffle.get_age())
+        self.assertEqual(6, self._george.get_age())
+
+    def test_get_age_puppy(self):
+        self.assertEqual(1, self._make(birth_year=2025).get_age())
+        self.assertEqual(0, self._make(birth_year=2026).get_age())
+
+    def test_get_age_not_mutated_by_other_calls(self):
+        self._waffle.set_weight(100)
+        self._waffle.set_name("Wafflez")
+        self.assertEqual(8, self._waffle.get_age())
