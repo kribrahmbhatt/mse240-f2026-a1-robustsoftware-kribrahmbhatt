@@ -303,3 +303,64 @@ class TestDog(unittest.TestCase):
         self._waffle.set_name("Maple")
         self.assertEqual("George", self._george.get_name())
         self.assertEqual("Maple", self._waffle.get_name())
+
+    #
+    # set_weight
+    #
+
+    def test_set_weight_typical(self):
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+        self._waffle.set_weight(135.5)
+        self.assertAlmostEqual(135.5, self._waffle.get_weight())
+
+    def test_set_weight_int_stored_as_float(self):
+        self._waffle.set_weight(120)
+        self.assertIsInstance(self._waffle.get_weight(), float)
+        self.assertEqual(120.0, self._waffle.get_weight())
+
+    def test_set_weight_other_fields_unchanged(self):
+        self._waffle.set_weight(120)
+        self.assertEqual("Waffle", self._waffle.get_name())
+        self.assertEqual("Newfoundland", self._waffle.get_breed())
+        self.assertEqual("Male", self._waffle.get_gender())
+        self.assertEqual("Black", self._waffle.get_colour())
+        self.assertEqual(["geriatric hips"], self._waffle.get_potential_health_issues())
+        self.assertEqual(8, self._waffle.get_age())
+
+    def test_set_weight_valueerror_negative(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(-1)
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(-0.001)
+
+    def test_set_weight_valueerror_zero(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(0)
+
+    def test_set_weight_valueerror_over_max(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(500.1)
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(10000)
+
+    def test_set_weight_max_boundary_ok(self):
+        self._waffle.set_weight(Dog.MAX_WEIGHT)
+        self.assertEqual(Dog.MAX_WEIGHT, self._waffle.get_weight())
+
+    def test_set_weight_typeerror(self):
+        for bad in ("130", None, [130], True):
+            with self.assertRaises(TypeError):
+                self._waffle.set_weight(bad)
+
+    def test_set_weight_invalid_leaves_weight(self):
+        with self.assertRaises(ValueError):
+            self._waffle.set_weight(-5)
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+        with self.assertRaises(TypeError):
+            self._waffle.set_weight("heavy")
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+
+    def test_set_weight_can_be_called_repeatedly(self):
+        self._waffle.set_weight(131)
+        self._waffle.set_weight(129)
+        self.assertAlmostEqual(129, self._waffle.get_weight())
