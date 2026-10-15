@@ -416,3 +416,70 @@ class TestDog(unittest.TestCase):
         dog.add_potential_health_issue("eyes")
         self.assertEqual(["hips"], issues)
         self.assertEqual(["hips", "eyes"], dog.get_potential_health_issues())
+
+    #
+    # record_walk / record_meal
+    #
+
+    def test_record_walk_typical(self):
+        self._waffle.record_walk(NOW)
+        self.assertEqual(NOW, self._waffle.get_most_recent_walk_time())
+
+    def test_record_walk_default_is_now(self):
+        before = datetime.now()
+        self._waffle.record_walk()
+        after = datetime.now()
+        self.assertGreaterEqual(self._waffle.get_most_recent_walk_time(), before)
+        self.assertLessEqual(self._waffle.get_most_recent_walk_time(), after)
+
+    def test_record_walk_typeerror(self):
+        with self.assertRaises(TypeError):
+            self._waffle.record_walk("noon")
+        with self.assertRaises(TypeError):
+            self._waffle.record_walk(12)
+        self.assertIsNone(self._waffle.get_most_recent_walk_time())
+
+    def test_record_walk_does_not_touch_meal(self):
+        self._waffle.record_walk(NOW)
+        self.assertIsNone(self._waffle.get_most_recent_meal_time())
+        self.assertEqual("Waffle", self._waffle.get_name())
+
+    def test_record_walk_latest_replaces_previous(self):
+        self._waffle.record_walk(NOW)
+        self._waffle.record_walk(NOW + timedelta(hours=1))
+        self.assertEqual(NOW + timedelta(hours=1), self._waffle.get_most_recent_walk_time())
+
+    def test_record_meal_typical(self):
+        self._waffle.record_meal(NOW)
+        self.assertEqual(NOW, self._waffle.get_most_recent_meal_time())
+
+    def test_record_meal_default_is_now(self):
+        before = datetime.now()
+        self._waffle.record_meal()
+        after = datetime.now()
+        self.assertGreaterEqual(self._waffle.get_most_recent_meal_time(), before)
+        self.assertLessEqual(self._waffle.get_most_recent_meal_time(), after)
+
+    def test_record_meal_typeerror(self):
+        with self.assertRaises(TypeError):
+            self._waffle.record_meal("noon")
+        with self.assertRaises(TypeError):
+            self._waffle.record_meal(None.__class__)
+        self.assertIsNone(self._waffle.get_most_recent_meal_time())
+
+    def test_record_meal_does_not_touch_walk(self):
+        self._waffle.record_meal(NOW)
+        self.assertIsNone(self._waffle.get_most_recent_walk_time())
+        self.assertAlmostEqual(130, self._waffle.get_weight())
+
+    def test_record_meal_latest_replaces_previous(self):
+        self._waffle.record_meal(NOW)
+        self._waffle.record_meal(NOW + timedelta(hours=5))
+        self.assertEqual(NOW + timedelta(hours=5), self._waffle.get_most_recent_meal_time())
+
+    def test_constructor_initial_care_state(self):
+        dog = self._waffle
+        self.assertIsNone(dog.get_most_recent_walk_time())
+        self.assertIsNone(dog.get_most_recent_meal_time())
+        self.assertEqual(Dog.DEFAULT_MAX_TIME_BETWEEN_WALKS, dog.get_max_time_between_walks())
+        self.assertEqual(Dog.DEFAULT_TYPICAL_TIME_BETWEEN_MEALS, dog.get_typical_time_between_meals())
